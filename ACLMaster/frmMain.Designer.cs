@@ -242,6 +242,7 @@
             this.treeViewFolder.Size = new System.Drawing.Size(350, 678);
             this.treeViewFolder.TabIndex = 0;
             this.treeViewFolder.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView1_BeforeExpand);
+            this.treeViewFolder.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewFolder_AfterSelect);
             this.treeViewFolder.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick_1);
             // 
             // splitContainerRight

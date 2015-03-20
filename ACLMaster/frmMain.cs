@@ -605,6 +605,7 @@ namespace ACLMaster
 
             columnSecurablesIcon.ImageGetter = delegate(object x)
             {
+                //fixme: Icon stuff
                 if (x.GetType() == typeof (Folder))
                 {
                     return "folder.png";
@@ -2273,6 +2274,11 @@ namespace ACLMaster
         }
 
         private void toolStripButton1_DisplayStyleChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void treeViewFolder_AfterSelect(object sender, TreeViewEventArgs e)
         {
 
         }
