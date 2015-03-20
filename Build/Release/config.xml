@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <settingsFile>C:\Users\Nils Tekampe\Source\Repos\ACLMaster\Build\Release\config.xml</settingsFile>
+  <upgraded>true</upgraded>
+  <dateOfLastScan>1978-04-20T00:00:00</dateOfLastScan>
+  <validityPeriodGroupsAndUsers>14</validityPeriodGroupsAndUsers>
+  <showOnlyReadableFolders>true</showOnlyReadableFolders>
+  <showOnlyChangableFolders>false</showOnlyChangableFolders>
+  <machineIsDomainJoined>false</machineIsDomainJoined>
+  <domain />
+  <readDomainInformationFailed>false</readDomainInformationFailed>
+  <startEscalated>false</startEscalated>
+  <currentUser>NILSPC\Nils Tekampe</currentUser>
+  <logVerbose>false</logVerbose>
+  <greyOutProtectedSecurables>true</greyOutProtectedSecurables>
+  <nameLastUser1 />
+  <nameLastUser2 />
+  <nameLastUser3 />
+  <nameLastUser4 />
+  <nameLastUser5 />
+  <sidLastUser1 />
+  <sidLastUser2 />
+  <sidLastUser3 />
+  <sidLastUser4 />
+  <sidLastUser5 />
+  <localOnly>false</localOnly>
+  <showInternalDetails>false</showInternalDetails>
+  <PersonenArray />
+  <PersonenArray2 />
+  <PersonenArray3 />
+  <PersonenArray4 />
+  <PersonenArray5 />
+  <PersonenArray6 />
+</CustomSettings>

@@ -1,0 +1,9 @@
+C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ObjectListView\ObjectListView\bin\Debug\ObjectListView.XML
+C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ObjectListView\ObjectListView\bin\Debug\ObjectListView.dll
+C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ObjectListView\ObjectListView\bin\Debug\ObjectListView.pdb
+C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ObjectListView\ObjectListView\obj\Debug\ObjectListView2012.csprojResolveAssemblyReference.cache
+C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ObjectListView\ObjectListView\obj\Debug\BrightIdeasSoftware.Properties.Resources.resources
+C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ObjectListView\ObjectListView\obj\Debug\BrightIdeasSoftware.ColumnSelectionForm.resources
+C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ObjectListView\ObjectListView\obj\Debug\ObjectListView2012.csproj.GenerateResource.Cache
+C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ObjectListView\ObjectListView\obj\Debug\ObjectListView.dll
+C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ObjectListView\ObjectListView\obj\Debug\ObjectListView.pdb
