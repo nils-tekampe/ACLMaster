@@ -10,7 +10,7 @@ namespace ACLMaster
         public string volumeLabel;
         public string displayName;
         public Bitmap bitmap;
-        public DirectoryInfo rootDirectory;
+        public DirectoryInfo rootDirectory;    
         public DriveInfo info;
          
 
