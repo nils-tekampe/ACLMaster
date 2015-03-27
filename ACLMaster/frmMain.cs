@@ -605,12 +605,31 @@ namespace ACLMaster
 
             columnSecurablesIcon.ImageGetter = delegate(object x)
             {
-                //fixme: Icon stuff
-                if (x.GetType() == typeof (Folder))
+                if (x.GetType() == typeof(Folder))
                 {
                     return "folder.png";
                 }
-                return "file.png";
+                else
+                {
+
+                    var securable = (Securable)x;
+
+                    //return securable.name;
+                    //fixme: Icon stuff
+                    Icon ico = Icon.ExtractAssociatedIcon(securable.fullName);
+                    //this.Icon = ico;
+                    listViewSecurables.SmallImageList.Images.Add(securable.fullName, ico);
+                    listViewSecurables.LargeImageList.Images.Add(securable.fullName, ico);
+
+                    return securable.fullName;
+                    //if (x.GetType() == typeof (Folder))
+                    //{
+                    //    return "folder.png";
+
+
+                    //}
+                    //return "file.png";
+                }
             };
 
             Global.listedSecurables = new List<Securable>();
