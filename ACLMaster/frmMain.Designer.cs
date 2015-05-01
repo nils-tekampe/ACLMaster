@@ -601,13 +601,14 @@
             // checkBoxInheritance
             // 
             this.checkBoxInheritance.AutoSize = true;
+            this.checkBoxInheritance.BackColor = System.Drawing.SystemColors.Control;
             this.checkBoxInheritance.ForeColor = System.Drawing.SystemColors.ControlText;
             this.checkBoxInheritance.Location = new System.Drawing.Point(389, 17);
             this.checkBoxInheritance.Name = "checkBoxInheritance";
             this.checkBoxInheritance.Size = new System.Drawing.Size(167, 17);
             this.checkBoxInheritance.TabIndex = 1;
             this.checkBoxInheritance.Text = "Securable inherits permissions";
-            this.checkBoxInheritance.UseVisualStyleBackColor = true;
+            this.checkBoxInheritance.UseVisualStyleBackColor = false;
             this.checkBoxInheritance.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             this.checkBoxInheritance.Click += new System.EventHandler(this.checkBoxInheritance_Click);
             // 
@@ -992,6 +993,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(1112, 730);
             this.Controls.Add(this.splitContainerForm);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
