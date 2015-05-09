@@ -69,6 +69,11 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.ActiveDs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tulpep.ActiveDirectoryObjectPicker.1.0.26\lib\net35\Interop.ActiveDs.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
@@ -86,6 +91,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tulpep.ActiveDirectoryObjectPicker, Version=1.0.26.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tulpep.ActiveDirectoryObjectPicker.1.0.26\lib\net35\Tulpep.ActiveDirectoryObjectPicker.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ACEChanger.cs" />

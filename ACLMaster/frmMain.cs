@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using ACLMaster.Properties;
 using BrightIdeasSoftware;
 using log4net;
+using Tulpep.ActiveDirectoryObjectPicker;
 
 namespace ACLMaster
 {
@@ -983,6 +984,27 @@ namespace ACLMaster
 
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
+            DirectoryObjectPickerDialog picker = new DirectoryObjectPickerDialog()
+            {
+                AllowedObjectTypes = ObjectTypes.Computers  ,
+               DefaultObjectTypes = ObjectTypes.Computers,
+                AllowedLocations = Locations.All,
+                DefaultLocations = Locations.JoinedDomain,
+                MultiSelect = true,
+                ShowAdvancedView = true
+            };
+
+
+            if (picker.ShowDialog() == DialogResult.OK)
+            {
+                foreach (var sel in picker.SelectedObjects)
+                {
+                    Console.WriteLine(sel.Name);
+                }
+            }
+
+
+
             listViewSecurables.ShowGroups = !listViewSecurables.ShowGroups;
         }
 

@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ACLMaster.exe" size="618496">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ACLMaster.exe" size="617984">
       <assemblyIdentity name="ACLMaster" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>G+tFfB4jbuv31pRVUAueuCzScDDgc3TEsa65NdH24bo=</dsig:DigestValue>
+        <dsig:DigestValue>MCE1FeHwITp1BW/eAcTbAG4inRhZpuzBFVe134LUXGg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -74,6 +74,18 @@
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
         <dsig:DigestValue>Ycjnjx3xnKBJunHuCE9/vNLvn4eoqh0TCNiD1k8OEGo=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tulpep.ActiveDirectoryObjectPicker.dll" size="32768">
+      <assemblyIdentity name="Tulpep.ActiveDirectoryObjectPicker" version="1.0.26.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>2mtFnLo9vQM5upl/Zarxn6RGV3VNjDtwagNnNtv1hCU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

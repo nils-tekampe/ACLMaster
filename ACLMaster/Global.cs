@@ -546,19 +546,19 @@ namespace ACLMaster
         // This method will be called when the thread is started.
         public void DoWork()
         {
-            if (!readAllDomainUsers())
-            {
-                Global.settings.readDomainInformationFailed = true;
-                readCompleted = false;
-            }
+            //if (!readAllDomainUsers())
+            //{
+            //    Global.settings.readDomainInformationFailed = true;
+            //    readCompleted = false;
+            //}
 
-            if (!readAllDomainGroups())
-            {
-                Global.settings.readDomainInformationFailed = true;
-                readCompleted = false;
-            }
+            //if (!readAllDomainGroups())
+            //{
+            //    Global.settings.readDomainInformationFailed = true;
+            //    readCompleted = false;
+            //}
 
-            if (!readAllGroupsOfCurrentDomainUser())
+            if (!readAllLocalGroupsOfCurrentUser())
             {
                 Global.settings.readDomainInformationFailed = true;
                 readCompleted = false;
@@ -570,100 +570,32 @@ namespace ACLMaster
             _shouldStop = true;
         }
 
-        private bool readAllDomainUsers()
+
+        private bool readAllLocalGroupsOfCurrentUser()
         {
+            string resultStr = "";
+
             try
             {
-                PrincipalContext AD = new PrincipalContext(ContextType.Domain, Environment.UserDomainName);
-                UserPrincipal user = new UserPrincipal(AD);
-                PrincipalSearcher search2 = new PrincipalSearcher(user);
-
-                foreach (UserPrincipal result in search2.FindAll())
+                foreach (IdentityReference group in WindowsIdentity.GetCurrent().Groups)
                 {
-                    if (_shouldStop)
-                        break;
 
-                    Global.settings.allDomainUsers.Add(result.Sid.ToString(), new Prcpl(result.Sid.ToString(), result.Context.Name, result.Name,
+                    //      Global.settings.allLocalGroupsOfCurrentUser.Add(iterGroup.Current.Sid.ToString(), new Prcpl(iterGroup.Current.Sid.ToString(), iterGroup.Current.Context.Name, iterGroup.Current.Name, iterGroup.Current.UserPrincipalName));
+                    resultStr = resultStr + group.Translate(typeof(SecurityIdentifier)).Value + "\n";
+                    // resultStr = resultStr + group.Translate(typeof(NTAccount)).Value + "\n";
 
-    result.UserPrincipalName));
+
                 }
                 return true;
             }
-            catch (PrincipalServerDownException ex)
-            {
-            }
-            return false;
-        }
-
-        private bool readAllDomainGroups()
-        {
-            try
-            {
-                PrincipalContext AD = new PrincipalContext(ContextType.Domain, Environment.UserDomainName);
-                GroupPrincipal group = new GroupPrincipal(AD);
-                PrincipalSearcher searchgroup = new PrincipalSearcher(group);
-
-                using (PrincipalSearchResult<Principal> allPrincipals = searchgroup.FindAll())
-
-                    foreach (GroupPrincipal groupPrincipal in allPrincipals.OfType<GroupPrincipal>())
-                    {
-                        if (_shouldStop)
-                            break;
-
-                        Global.settings.allDomainGroups.Add(groupPrincipal.Sid.ToString(), new Prcpl(groupPrincipal.Sid.ToString(), groupPrincipal.Context.Name,
-
-    groupPrincipal.Name, groupPrincipal.UserPrincipalName));
-                    }
-                return true;
-            }
-            catch (PrincipalServerDownException ex)
-            {
-            }
-            return false;
-        }
-
-        private bool readAllGroupsOfCurrentDomainUser()
-        {
-            try
-            {
-                PrincipalContext context = new PrincipalContext(ContextType.Domain, Environment.UserDomainName);
-                UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, Environment.UserName);
-
-                PrincipalSearchResult<Principal> groups = userPrincipal.GetAuthorizationGroups();
-                var iterGroup = groups.GetEnumerator();
-                using (iterGroup)
-                {
-                    while (iterGroup.MoveNext())
-                    {
-                        try
-                        {
-                            if (_shouldStop)
-                                break;
-
-                            if (!Global.settings.allLocalGroupsOfCurrentUser.Contains(iterGroup.Current.Sid.ToString()))
-                            {
-                                Global.settings.allLocalGroupsOfCurrentUser.Add(iterGroup.Current.Sid.ToString(), new Prcpl(iterGroup.Current.Sid.ToString(),
-
-    iterGroup.Current.Context.Name, iterGroup.Current.Name, iterGroup.Current.UserPrincipalName));
-                            }
-                            Principal p = iterGroup.Current;
-                            Console.WriteLine(p.Name);
-                        }
-                        catch (NoMatchingPrincipalException pex)
-                        {
-                            continue;
-                        }
-                    }
-                }
-
-                return true;
-            }
-            catch (PrincipalServerDownException ex)
+            catch (Exception ex)
             {
                 //todo
             }
             return false;
+
         }
+
     }
 
     public class FileSystemAccessRuleExtended : INotifyPropertyChanged
