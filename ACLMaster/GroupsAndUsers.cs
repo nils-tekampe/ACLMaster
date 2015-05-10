@@ -19,10 +19,10 @@ namespace ACLMaster
         /// </summary>
         public static void getGroupsAndUsers()
         {
-            if ((Global.settings.validityPeriodGroupsAndUsers != 0) && ((DateTime.Now - Global.settings.dateOfLastScan).TotalDays < Global.settings.validityPeriodGroupsAndUsers))
-            {
-                return;
-            }
+            //if ((Global.settings.validityPeriodGroupsAndUsers != 0) && ((DateTime.Now - Global.settings.dateOfLastScan).TotalDays < Global.settings.validityPeriodGroupsAndUsers))
+            //{
+            //    return;
+            //}
 
             if (MessageBox.Show("We need to acquire information about the groups and users on the local machine and (potentially) the domain that the machine belongs to. This may take a while.", "Acquiring group and user information", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
             {
@@ -32,27 +32,29 @@ namespace ACLMaster
 
 
             //initialize the dictionaries
-            Global.settings.allLocalUsers = new OrderedDictionary();
-            Global.settings.allDomainUsers = new OrderedDictionary();
-            Global.settings.allLocalGroups = new OrderedDictionary();
-            Global.settings.allDomainGroups = new OrderedDictionary();
+            //Global.settings.allLocalUsers = new OrderedDictionary();
+            //lobal.settings.allDomainUsers = new OrderedDictionary();
+            //Global.settings.allLocalGroups = new OrderedDictionary();
+           // Global.settings.allDomainGroups = new OrderedDictionary();
             Global.settings.allLocalGroupsOfCurrentUser = new OrderedDictionary();
             Global.settings.allDomainGroupsOfCurrentUser = new OrderedDictionary();
             bool domainSuccess = true;
 
-            readAllLocalUsers();
-            readAllLocalGroups();
+          //  readAllLocalUsers();
+           // readAllLocalGroups();
 
-         
-     
+
+            ReadAllLocalGroupsOfCurrentUser();
+            readAllDomainGroupsOfCurrentUser();
+
             if (Global.settings.machineIsDomainJoined && !Global.settings.localOnly)
             {
                 //Here we are in the domain context because the machine id domain joined.
                 //This means that we can safely try to read all groups and users from thd PDC.
                 try
                 {
-                    readAllDomainUsers();
-                    readAllDomainGroups();
+                   // readAllDomainUsers();
+                   // readAllDomainGroups();
                 }
                 catch (PrincipalServerDownException ex)
                 {
@@ -67,36 +69,36 @@ namespace ACLMaster
                 }
             }
 
-            //Next wer are interested in the groups of the user. So let's see whether it is a local one or one from the domain.
-            if (isCurrentUserLocalUser()|| !domainSuccess)
-            {
-                ReadAllGroupsOfCurrentLocalUser();
-            }
-            else
-            {
-                //case domain user. We need to get the local groups as well as the AD groups
-                try
-                {
-                    readAllLocalGroupsOfCurrentDomainUser();
-                    readAllDomainGroupsOfCurrentDomainUser();
-                }
-                catch (PrincipalServerDownException ex)
-                {
-                    if (MessageBox.Show("The domain server seems to be down. Shall we work locally?", "Server down", MessageBoxButtons.YesNo) == DialogResult.No)
-                    {
-                        Application.Exit();
-                    }
-                    else
-                    {
-                        domainSuccess = false;
-                    }
-                }
-            }
+            ////Next wer are interested in the groups of the user. So let's see whether it is a local one or one from the domain.
+            //if (isCurrentUserLocalUser()|| !domainSuccess)
+            //{
+            //    ReadAllLocalGroupsOfCurrentUser();
+            //}
+            //else
+            //{
+            //    //case domain user. We need to get the local groups as well as the AD groups
+            //    try
+            //    {
+            //      //  readAllLocalGroupsOfCurrentDomainUser();
+            //       // readAllDomainGroupsOfCurrentDomainUser();
+            //    }
+            //    catch (PrincipalServerDownException ex)
+            //    {
+            //        if (MessageBox.Show("The domain server seems to be down. Shall we work locally?", "Server down", MessageBoxButtons.YesNo) == DialogResult.No)
+            //        {
+            //            Application.Exit();
+            //        }
+            //        else
+            //        {
+            //            domainSuccess = false;
+            //        }
+            //    }
+            //}
 
        
             //for convenience we will mark the groups that the current user is a member of
 
-            MarkGroups();
+          //  MarkGroups();
 
             if (domainSuccess)
             {
@@ -131,63 +133,128 @@ namespace ACLMaster
             Environment.Exit(0);
         }
 
-        private static void MarkGroups()
-        {
-            foreach (DictionaryEntry de in Global.settings.allLocalGroups)
-            {
-                if (Global.settings.allLocalGroupsOfCurrentUser.Contains(de.Key))
-                    ((Prcpl)de.Value).currentUserIsMember = true;
-            }
+        //private static void MarkGroups()
+        //{
+        //    foreach (DictionaryEntry de in Global.settings.allLocalGroups)
+        //    {
+        //        if (Global.settings.allLocalGroupsOfCurrentUser.Contains(de.Key))
+        //            ((Prcpl)de.Value).currentUserIsMember = true;
+        //    }
 
-            //todo: domain groups
-        }
+        //    //todo: domain groups
+        //}
 
         /// <summary>
         ///     Reads all groups of current local user.
         /// </summary>
-        private static void ReadAllGroupsOfCurrentLocalUser()
+        private static void ReadAllLocalGroupsOfCurrentUser()
         {
+
             var context = new PrincipalContext(ContextType.Machine, Environment.MachineName);
             UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, Environment.UserName);
-
+           
             foreach (GroupPrincipal group in userPrincipal.GetAuthorizationGroups())
             {
-                Global.settings.allLocalGroupsOfCurrentUser.Add(@group.Sid.ToString(), new Prcpl(@group.Sid.ToString(), @group.Context.Name, @group.Name, @group.UserPrincipalName));
+                
+                 Global.settings.allLocalGroupsOfCurrentUser.Add(@group.Sid.ToString(), new Prcpl(@group.Sid.ToString(), @group.Context.Name, @group.Name, @group.UserPrincipalName));
+
+        
+           
             }
+
+//            MessageBox.Show(resultStr);
+            string test;
+            test="";
+
+
+
+            //var context = new PrincipalContext(ContextType.Machine, Environment.MachineName);
+            //UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, Environment.UserName);
+
+            //foreach (GroupPrincipal group in userPrincipal.GetAuthorizationGroups())
+            //{
+            //    Global.settings.allLocalGroupsOfCurrentUser.Add(@group.Sid.ToString(), new Prcpl(@group.Sid.ToString(), @group.Context.Name, @group.Name, @group.UserPrincipalName));
+            //}
         }
 
-        private static void readAllLocalGroupsOfCurrentDomainUser()
+        //private static void readAllLocalGroupsOfCurrentDomainUser()
+        //{
+        //    var root = new DirectoryEntry(String.Format("WinNT://{0},Computer", Environment.MachineName), null, null, AuthenticationTypes.Secure);
+
+        //    foreach (DirectoryEntry groupDirectoryEntry in root.Children)
+        //    {
+        //        if (groupDirectoryEntry.SchemaClassName != "Group")
+        //            continue;
+
+        //        string groupName = groupDirectoryEntry.Name;
+        //        Console.WriteLine("Checking: {0}", groupName);
+
+        //        if (IsUserMemberOfGroup(groupDirectoryEntry, String.Format("WinNT://{0}/{1}", "tuvit", Environment.UserName)))
+        //        {
+        //            MessageBox.Show(groupName);
+        //        }
+        //    }
+        //}
+
+        private static void readAllDomainGroupsOfCurrentUser()
         {
-            var root = new DirectoryEntry(String.Format("WinNT://{0},Computer", Environment.MachineName), null, null, AuthenticationTypes.Secure);
+            //(gute Basis)
 
-            foreach (DirectoryEntry groupDirectoryEntry in root.Children)
+
+            string resultStr = "";
+            // Objekt für AD-Abfrage erzeugen
+            using (DirectorySearcher searcher = new DirectorySearcher(new DirectoryEntry(string.Empty)))
             {
-                if (groupDirectoryEntry.SchemaClassName != "Group")
-                    continue;
+                // nach Kriterium filtern - hier nach Gruppe mit einem best. Namen (Inhalt von 'username')
+                searcher.Filter = string.Concat(string.Format(@"(&(ObjectClass=user)(sAMAccountName={0}))", Environment.UserName));
 
-                string groupName = groupDirectoryEntry.Name;
-                Console.WriteLine("Checking: {0}", groupName);
-
-                if (IsUserMemberOfGroup(groupDirectoryEntry, String.Format("WinNT://{0}/{1}", "tuvit", Environment.UserName)))
+                // Anfrage mit gesetzteen Filter ausführen und Ergebnisse durch iterieren
+                foreach (SearchResult result in searcher.FindAll())
                 {
-                    MessageBox.Show(groupName);
+                    // Eigenschaft 'MemberOf' des AD-Knotenpunktes 'result' durch iterieren
+                    foreach (var group in result.Properties["MemberOf"])
+                    {
+                        // cast von 'group' zum Datentyp 'string' sollte nicht möglich sein, wird 'groupResult' 'null'
+                        string groupResult = group as string;
+
+                        if (groupResult != null)
+                        {
+                            // CN aus dem Pfad extrahieren und zur Liste hinzufügen
+                            resultStr = resultStr + groupResult.Substring(3, groupResult.IndexOf(',') - 3) + "\n";
+
+                            //  groups.Add(groupResult.Substring(3, groupResult.IndexOf(',') - 3));
+                        }
+                    }
                 }
             }
-        }
 
-        private static void readAllDomainGroupsOfCurrentDomainUser()
-        {
-            //todo: not yet working: http://stackoverflow.com/questions/4460558/how-to-get-all-the-ad-groups-for-a-particular-user
 
-            UserPrincipal user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, Environment.UserDomainName), IdentityType.SamAccountName, Global.currentIdentity.Name);
+          
 
-            foreach (GroupPrincipal groupPrincipal in user.GetGroups())
-            {
-                Prcpl prcpl = new Prcpl(groupPrincipal.Sid.ToString(), groupPrincipal.Context.Name, groupPrincipal.Name, groupPrincipal.UserPrincipalName);
-                Global.settings.allDomainGroupsOfCurrentUser.Add(groupPrincipal.Sid.ToString(), prcpl);
-            }
 
-         
+
+
+
+
+
+
+
+
+
+
+
+
+            ////todo: not yet working: http://stackoverflow.com/questions/4460558/how-to-get-all-the-ad-groups-for-a-particular-user
+
+            //UserPrincipal user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, Environment.UserDomainName), IdentityType.SamAccountName, Global.currentIdentity.Name);
+
+            //foreach (GroupPrincipal groupPrincipal in user.GetGroups())
+            //{
+            //    Prcpl prcpl = new Prcpl(groupPrincipal.Sid.ToString(), groupPrincipal.Context.Name, groupPrincipal.Name, groupPrincipal.UserPrincipalName);
+            //    Global.settings.allDomainGroupsOfCurrentUser.Add(groupPrincipal.Sid.ToString(), prcpl);
+            //}
+
+
         }
 
         private static bool IsUserMemberOfGroup(DirectoryEntry group, string userPath)
@@ -242,21 +309,21 @@ namespace ACLMaster
                 }
         }
 
-        private static void readAllLocalUsers()
-        {
-            var AD = new PrincipalContext(ContextType.Machine, Environment.MachineName);
-            var u = new UserPrincipal(AD);
-            var search = new PrincipalSearcher(u);
+        //private static void readAllLocalUsers()
+        //{
+        //    var AD = new PrincipalContext(ContextType.Machine, Environment.MachineName);
+        //    var u = new UserPrincipal(AD);
+        //    var search = new PrincipalSearcher(u);
 
-            foreach (UserPrincipal result in search.FindAll())
-            {
-                Global.settings.allLocalUsers.Add(result.Sid.ToString(), new Prcpl(result.Sid.ToString(), result.Context.Name, result.Name, result.UserPrincipalName));
+        //    foreach (UserPrincipal result in search.FindAll())
+        //    {
+        //        Global.settings.allLocalUsers.Add(result.Sid.ToString(), new Prcpl(result.Sid.ToString(), result.Context.Name, result.Name, result.UserPrincipalName));
 
-                Console.WriteLine(result.Name);
-            }
+        //        Console.WriteLine(result.Name);
+        //    }
 
-            CustomSettings.save(Global.settings, Global.settings.settingsFile);
-        }
+        //    CustomSettings.save(Global.settings, Global.settings.settingsFile);
+        //}
 
         private static void readAllDomainUsers()
         {

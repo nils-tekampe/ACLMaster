@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ACLMaster.exe" size="611840">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ACLMaster.exe" size="610816">
       <assemblyIdentity name="ACLMaster" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>TaVOyDhyKw/qbQa+GxCJ1B3ccS1vm/tGoHZrOYnkhMc=</dsig:DigestValue>
+        <dsig:DigestValue>RikMitYW35MoZVwshhE1RejAcJImXLyyDQyHfZ8VVu4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
