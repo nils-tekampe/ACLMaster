@@ -2,6 +2,7 @@
 using System.Security.Principal;
 using System.Windows.Forms;
 using BrightIdeasSoftware;
+using Tulpep.ActiveDirectoryObjectPicker;
 
 namespace ACLMaster
 {
@@ -119,21 +120,64 @@ namespace ACLMaster
 
             if ((_user == "") && (_SID == ""))
             {
-                frmSelectUser frmUser = new frmSelectUser();
 
-                if (frmUser.ShowDialog() == DialogResult.OK)
+                Tulpep.ActiveDirectoryObjectPicker.DirectoryObjectPickerDialog picker = new DirectoryObjectPickerDialog()
                 {
-                    user = frmUser.domainChosen + "\\" + frmUser.userChosen;
-                    sid = frmUser.sidChosen;
+                    AllowedObjectTypes = ObjectTypes.Computers,
+                    DefaultObjectTypes = ObjectTypes.Computers,
+                    AllowedLocations = Locations.All,
+                    DefaultLocations = Locations.JoinedDomain,
+                    MultiSelect = false,
+                    ShowAdvancedView = true
+                };
 
-                    //we only remember the user in the list of last users if selected by the user
-                    Global.shiftLastUsers(sid, user);
+
+
+                picker.AllowedObjectTypes |= ObjectTypes.Groups;
+                picker.AttributesToFetch.Add("objectSid");
+
+                if (picker.ShowDialog() == DialogResult.OK)
+                {
+                    user = picker.SelectedObject.Name;
+                    sid = picker.SelectedObject.FetchedAttributes.ToString();
+
+                  //  user = frmUser.domainChosen + "\\" + frmUser.userChosen;
+                          //  sid = frmUser.sidChosen;
+
+                    //        //we only remember the user in the list of last users if selected by the user
+                    //        Global.shiftLastUsers(sid, user);
                 }
                 else
                 {
                     MessageBox.Show("error in selecting user");
                     return;
                 }
+
+
+
+
+
+
+
+
+
+
+
+            //    frmSelectUser frmUser = new frmSelectUser();
+
+            //    if (frmUser.ShowDialog() == DialogResult.OK)
+            //    {
+            //        user = frmUser.domainChosen + "\\" + frmUser.userChosen;
+            //        sid = frmUser.sidChosen;
+
+            //        //we only remember the user in the list of last users if selected by the user
+            //        Global.shiftLastUsers(sid, user);
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("error in selecting user");
+            //        return;
+            //    }
             }
 
             else

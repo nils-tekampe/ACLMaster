@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
+using System.Security.Principal;
 using System.Windows.Forms;
+using Tulpep.ActiveDirectoryObjectPicker;
 
 namespace ACLMaster
 {
@@ -275,6 +277,97 @@ namespace ACLMaster
         public static bool isCurrentUserLocalUser()
         {
             return Environment.MachineName.ToLower() == Environment.UserDomainName.ToLower();
+        }
+
+
+        public static Prcpl pickUser(bool userOnly)
+        {
+
+            Prcpl ret = new Prcpl();
+
+            Tulpep.ActiveDirectoryObjectPicker.DirectoryObjectPickerDialog picker = new DirectoryObjectPickerDialog()
+            {
+                AllowedObjectTypes = ObjectTypes.All   ,
+                DefaultObjectTypes = ObjectTypes.None  ,
+                AllowedLocations = Locations.All,
+                DefaultLocations = Locations.JoinedDomain  ,
+                MultiSelect = false,
+                ShowAdvancedView = true
+            };
+
+
+
+             picker.DefaultObjectTypes  |= ObjectTypes.Users ;
+            picker.DefaultObjectTypes |= ObjectTypes.WellKnownPrincipals ;
+
+            if (!userOnly)
+            {
+          
+                picker.DefaultObjectTypes  |= ObjectTypes.BuiltInGroups;
+                picker.DefaultObjectTypes |= ObjectTypes.Groups;
+            }
+
+            picker.Providers = ADsPathsProviders.WinNT;
+            picker.AttributesToFetch.Add("objectSid");
+
+            if (picker.ShowDialog() == DialogResult.OK)
+            {
+   
+                ret.Name = picker.SelectedObject.Name;
+
+
+                string[] split = picker.SelectedObject.Path.Split('/');
+
+                ret.Domain = split[split.Length - 2];
+
+                MessageBox.Show(picker.SelectedObject.Name + "\n" + picker.SelectedObject.Path);
+
+                if (picker.SelectedObject.FetchedAttributes[0] == null)
+                {
+                    //   sb.Append("(not present)");
+                    //fixme: SID anders ermitteln
+                }
+                else if (picker.SelectedObject.FetchedAttributes[0] is byte[])
+                {
+                    byte[] bytes = (byte[])picker.SelectedObject.FetchedAttributes[0];
+                    ret.Sid  = BytesToString(bytes);
+                }
+
+                return ret;
+
+            
+            }
+            else
+            {
+                MessageBox.Show("error in selecting user");
+                return ret ;
+            }
+
+        }
+
+        private static string BytesToString(byte[] bytes)
+        {
+            try
+            {
+                Guid guid = new Guid(bytes);
+                return guid.ToString("D");
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch (Exception)
+            {
+            }
+
+            try
+            {
+                SecurityIdentifier sid = new SecurityIdentifier(bytes, 0);
+                return sid.ToString();
+            }
+            // ReSharper disable once EmptyGeneralCatchClause
+            catch (Exception)
+            {
+            }
+
+            return "0x" + BitConverter.ToString(bytes).Replace('-', ' ');
         }
     }
 }

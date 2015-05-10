@@ -14,6 +14,7 @@ using ACLMaster.Properties;
 using BrightIdeasSoftware;
 using log4net;
 using Tulpep.ActiveDirectoryObjectPicker;
+using System.Collections;
 
 namespace ACLMaster
 {
@@ -984,29 +985,13 @@ namespace ACLMaster
 
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
-            DirectoryObjectPickerDialog picker = new DirectoryObjectPickerDialog()
-            {
-                AllowedObjectTypes = ObjectTypes.Computers  ,
-               DefaultObjectTypes = ObjectTypes.Computers,
-                AllowedLocations = Locations.All,
-                DefaultLocations = Locations.JoinedDomain,
-                MultiSelect = true,
-                ShowAdvancedView = true
-            };
+            Prcpl test = GroupsAndUsers.pickUser(false);
+            MessageBox.Show(test.Domain+ "\n" + test.Name+"\n"+test.Sid );
 
-
-            if (picker.ShowDialog() == DialogResult.OK)
-            {
-                foreach (var sel in picker.SelectedObjects)
-                {
-                    Console.WriteLine(sel.Name);
-                }
-            }
-
-
-
-            listViewSecurables.ShowGroups = !listViewSecurables.ShowGroups;
+           listViewSecurables.ShowGroups = !listViewSecurables.ShowGroups;
         }
+
+       
 
         private void toolStripButton1_Click_2(object sender, EventArgs e)
         {
@@ -1406,20 +1391,22 @@ namespace ACLMaster
 
             if ((_user == "") && (_SID == ""))
             {
-                var frmUser = new frmSelectUser();
+                Prcpl pcrplUser = GroupsAndUsers.pickUser(false);
 
-                if (frmUser.ShowDialog() == DialogResult.OK)
-                {
-                    user = frmUser.domainChosen + "\\" + frmUser.userChosen;
-                    SID = frmUser.sidChosen;
+                //var frmUser = new frmSelectUser();
 
-                    //we only remember the user in the list of last users if selected by the user
-                    Global.shiftLastUsers(SID, user);
-                }
-                else
-                {
-                    MessageBox.Show("error in selecting user");
-                }
+                //if (frmUser.ShowDialog() == DialogResult.OK)
+                //{
+                    //user = frmUser.domainChosen + "\\" + frmUser.userChosen;
+                    //SID = frmUser.sidChosen;
+
+                //    //we only remember the user in the list of last users if selected by the user
+                //    Global.shiftLastUsers(SID, user);
+                //}
+                //else
+                //{
+                //    MessageBox.Show("error in selecting user");
+                //}
             }
             else
             {
@@ -1431,7 +1418,7 @@ namespace ACLMaster
             {
                 foreach (OLVListItem olvi in listViewSecurables.SelectedItems)
                 {
-                    ((Securable) olvi.RowObject).changeOwner(SID);
+                    ((Securable)olvi.RowObject).changeOwner(SID);
                 }
             }
 
@@ -1975,19 +1962,20 @@ namespace ACLMaster
             switch (clickedMenuItem.Name)
             {
                 case "itemSelectUser":
-                    var frmUser = new frmSelectUser();
-                    if (frmUser.ShowDialog() == DialogResult.OK)
-                    {
-                        string user = frmUser.domainChosen + "\\" + frmUser.userChosen;
-                        userSID = frmUser.sidChosen;
+                    //fixme: select user
+                    //var frmUser = new frmSelectUser();
+                    //if (frmUser.ShowDialog() == DialogResult.OK)
+                    //{
+                    //    string user = frmUser.domainChosen + "\\" + frmUser.userChosen;
+                    //    userSID = frmUser.sidChosen;
 
-                        //we only remember the user in the list of last users if selected by the user
-                        Global.shiftLastUsers(userSID, user);
-                    }
-                    else
-                    {
-                        MessageBox.Show("error in selecting user");
-                    }
+                    //    //we only remember the user in the list of last users if selected by the user
+                    //    Global.shiftLastUsers(userSID, user);
+                    //}
+                    //else
+                    //{
+                    //    MessageBox.Show("error in selecting user");
+                    //}
                     break;
 
                 case "itemLastUser1":

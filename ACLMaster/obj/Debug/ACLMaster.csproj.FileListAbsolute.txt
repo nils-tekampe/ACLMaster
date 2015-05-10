@@ -7,7 +7,6 @@ C:\Users\Nils Tekampe\Source\Repos\ACLMaster\Build\Debug\ACLMaster.exe
 C:\Users\Nils Tekampe\Source\Repos\ACLMaster\Build\Debug\ACLMaster.pdb
 C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ACLMaster\obj\Debug\ACLMaster.csprojResolveAssemblyReference.cache
 C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ACLMaster\obj\Debug\ACLMaster.frmMain.resources
-C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ACLMaster\obj\Debug\ACLMaster.frmSelectUser.resources
 C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ACLMaster\obj\Debug\ACLMaster.frmSettings.resources
 C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ACLMaster\obj\Debug\ACLMaster.frmWaitForDomainInformation.resources
 C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ACLMaster\obj\Debug\ACLMaster.Properties.Resources.resources
