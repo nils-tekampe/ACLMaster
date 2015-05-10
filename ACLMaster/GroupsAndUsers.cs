@@ -219,9 +219,15 @@ namespace ACLMaster
 
                         if (groupResult != null)
                         {
-                            // CN aus dem Pfad extrahieren und zur Liste hinzufügen
-                            resultStr = resultStr + groupResult.Substring(3, groupResult.IndexOf(',') - 3) + "\n";
 
+                            string[] split = groupResult.Split(',');
+
+                          
+                            // CN aus dem Pfad extrahieren und zur Liste hinzufügen
+                            string name = split[0].Substring(3, split[0].Length - 3);
+                            string domain = split[2].Substring(3, split[2].Length - 3);
+                            resultStr = resultStr + groupResult.Substring(3, groupResult.IndexOf(',') - 3) + "\n";
+                           
                             //  groups.Add(groupResult.Substring(3, groupResult.IndexOf(',') - 3));
                         }
                     }

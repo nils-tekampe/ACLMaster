@@ -16,3 +16,21 @@ C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ACLMaster\obj\Debug\ACLMaster.exe.m
 C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ACLMaster\obj\Debug\ACLMaster.application
 C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ACLMaster\obj\Debug\ACLMaster.exe
 C:\Users\Nils Tekampe\Source\Repos\ACLMaster\ACLMaster\obj\Debug\ACLMaster.pdb
+\\psf\Home\Desktop\GitHub\ACLMaster\ACLMaster\obj\Debug\ACLMaster.csprojResolveAssemblyReference.cache
+\\psf\Home\Desktop\GitHub\ACLMaster\ACLMaster\obj\Debug\ACLMaster.frmMain.resources
+\\psf\Home\Desktop\GitHub\ACLMaster\ACLMaster\obj\Debug\ACLMaster.frmSettings.resources
+\\psf\Home\Desktop\GitHub\ACLMaster\ACLMaster\obj\Debug\ACLMaster.frmWaitForDomainInformation.resources
+\\psf\Home\Desktop\GitHub\ACLMaster\ACLMaster\obj\Debug\ACLMaster.Properties.Resources.resources
+\\psf\Home\Desktop\GitHub\ACLMaster\ACLMaster\obj\Debug\ACLMaster.csproj.GenerateResource.Cache
+\\psf\Home\Desktop\GitHub\ACLMaster\ACLMaster\obj\Debug\ACLMaster.TrustInfo.xml
+\\psf\Home\Desktop\GitHub\ACLMaster\ACLMaster\obj\Debug\ACLMaster.exe
+\\psf\Home\Desktop\GitHub\ACLMaster\ACLMaster\obj\Debug\ACLMaster.pdb
+\\psf\Home\Desktop\GitHub\ACLMaster\Build\Debug\log4netVerbose.config
+\\psf\Home\Desktop\GitHub\ACLMaster\Build\Debug\log4netStandard.config
+\\psf\Home\Desktop\GitHub\ACLMaster\Build\Debug\ACLMaster.exe.config
+\\psf\Home\Desktop\GitHub\ACLMaster\Build\Debug\ACLMaster.exe.manifest
+\\psf\Home\Desktop\GitHub\ACLMaster\Build\Debug\ACLMaster.application
+\\psf\Home\Desktop\GitHub\ACLMaster\Build\Debug\ACLMaster.exe
+\\psf\Home\Desktop\GitHub\ACLMaster\Build\Debug\ACLMaster.pdb
+\\psf\Home\Desktop\GitHub\ACLMaster\ACLMaster\obj\Debug\ACLMaster.exe.manifest
+\\psf\Home\Desktop\GitHub\ACLMaster\ACLMaster\obj\Debug\ACLMaster.application
