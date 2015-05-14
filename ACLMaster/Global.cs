@@ -334,6 +334,7 @@ namespace ACLMaster
         public string Name;
         public string Upn;
         public bool currentUserIsMember;
+        public bool local; //true if this is a local group. False for domain controlled groups
 
         public Prcpl()
         {
@@ -367,6 +368,11 @@ namespace ACLMaster
             else
                 Domain = _domain;
 
+            if (_domain == Environment.MachineName)
+                local = true;
+            else
+                local = false;
+
             currentUserIsMember = false;
         }
 
@@ -397,6 +403,12 @@ namespace ACLMaster
                 Domain = "";
             else
                 Domain = _domain;
+
+            if (_domain == Environment.MachineName)
+                local = true;
+            else
+                local = false;
+
 
             currentUserIsMember = _currentUserIsMember;
         }

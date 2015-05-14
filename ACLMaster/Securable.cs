@@ -488,7 +488,7 @@ namespace ACLMaster
                         { rules.Add(rule); }
 
                         //if the rule is for a group that the user belongs to, we do the same
-                        if (Global.settings.allLocalGroupsOfCurrentUser.Contains(rule.IdentityReference.Value))
+                        if (Global.settings.allGroupsOfCurrentUser.Contains(rule.IdentityReference.Value))
                             rules.Add(rule);
 
                         //fixme: what about domain gropus

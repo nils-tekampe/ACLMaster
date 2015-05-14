@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Security.Principal;
 using System.Windows.Forms;
@@ -35,13 +37,13 @@ namespace ACLMaster
             //Global.settings.allLocalUsers = new OrderedDictionary();
             //lobal.settings.allDomainUsers = new OrderedDictionary();
             //Global.settings.allLocalGroups = new OrderedDictionary();
-           // Global.settings.allDomainGroups = new OrderedDictionary();
-            Global.settings.allLocalGroupsOfCurrentUser = new OrderedDictionary();
-            Global.settings.allDomainGroupsOfCurrentUser = new OrderedDictionary();
+            // Global.settings.allDomainGroups = new OrderedDictionary();
+            Global.settings.allGroupsOfCurrentUser = new OrderedDictionary();
+            //    Global.settings.allDomainGroupsOfCurrentUser = new OrderedDictionary();
             bool domainSuccess = true;
 
-          //  readAllLocalUsers();
-           // readAllLocalGroups();
+            //  readAllLocalUsers();
+            // readAllLocalGroups();
 
 
             ReadAllLocalGroupsOfCurrentUser();
@@ -53,8 +55,8 @@ namespace ACLMaster
                 //This means that we can safely try to read all groups and users from thd PDC.
                 try
                 {
-                   // readAllDomainUsers();
-                   // readAllDomainGroups();
+                    // readAllDomainUsers();
+                    // readAllDomainGroups();
                 }
                 catch (PrincipalServerDownException ex)
                 {
@@ -95,10 +97,10 @@ namespace ACLMaster
             //    }
             //}
 
-       
+
             //for convenience we will mark the groups that the current user is a member of
 
-          //  MarkGroups();
+            //  MarkGroups();
 
             if (domainSuccess)
             {
@@ -152,20 +154,21 @@ namespace ACLMaster
 
             var context = new PrincipalContext(ContextType.Machine, Environment.MachineName);
             UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, Environment.UserName);
-           
+
             foreach (GroupPrincipal group in userPrincipal.GetAuthorizationGroups())
             {
-                
-                 Global.settings.allLocalGroupsOfCurrentUser.Add(@group.Sid.ToString(), new Prcpl(@group.Sid.ToString(), @group.Context.Name, @group.Name, @group.UserPrincipalName));
 
-        
-           
+                Global.settings.allGroupsOfCurrentUser.Add(@group.Sid.ToString(), new Prcpl(@group.Sid.ToString(), @group.Context.Name, @group.Name, @group.UserPrincipalName));
+
+
+
             }
 
-//            MessageBox.Show(resultStr);
+            //            MessageBox.Show(resultStr);
             string test;
-            test="";
-
+            test = "";
+            MessageBox.Show("fertig mit local");
+            // return result;
 
 
             //var context = new PrincipalContext(ContextType.Machine, Environment.MachineName);
@@ -196,7 +199,110 @@ namespace ACLMaster
         //    }
         //}
 
+
+
+        private static void _readAllDomainGroupsOfCurrentUser()
+        {
+            List<GroupPrincipal> result = new List<GroupPrincipal>();
+
+            // establish domain context
+            PrincipalContext yourDomain = new PrincipalContext(ContextType.Domain);
+
+            // find your user
+            UserPrincipal user = UserPrincipal.FindByIdentity(yourDomain, Environment.UserName);
+
+            // if found - grab its groups
+            if (user != null)
+            {
+                PrincipalSearchResult<Principal> groups = user.GetAuthorizationGroups();
+
+                // iterate over all groups
+                foreach (Principal p in groups)
+                {
+                    // make sure to add only group principals
+                    if (p is GroupPrincipal)
+                    {
+
+                        Global.settings.allGroupsOfCurrentUser.Add(p.Sid.ToString(), new Prcpl(p.Sid.ToString(), p.Context.Name, p.Name, p.UserPrincipalName));
+                    }
+                }
+            }
+
+            MessageBox.Show("fertig mit Domain");
+            // return result;
+
+        }
+
+        private static string obtainSIDForDomainUser(string _user, string _domain)
+        {
+
+
+            PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
+
+            // find a user
+            UserPrincipal user = UserPrincipal.FindByIdentity(ctx, _domain + "\\" + _user);
+
+            if (user != null)
+            {
+                // do something here....     
+                return user.Sid.ToString();
+            }
+            else
+                return "";
+        }
+
         private static void readAllDomainGroupsOfCurrentUser()
+        {
+            var userNameContains = Environment.UserName;
+
+            var identity = WindowsIdentity.GetCurrent().User;
+            var allDomains = Forest.GetCurrentForest().Domains.Cast<Domain>();
+
+            var allSearcher = allDomains.Select(domain =>
+            {
+                var searcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + domain.Name));
+
+                // Apply some filter to focus on only some specfic objects
+                searcher.Filter = String.Format("(&(&(objectCategory=person)(objectClass=user)(name=*{0}*)))", userNameContains);
+                return searcher;
+            });
+
+            var directoryEntriesFound = allSearcher
+                .SelectMany(searcher => searcher.FindAll()
+                    .Cast<SearchResult>()
+                    .Select(result => result.GetDirectoryEntry()));
+
+            var memberOf = directoryEntriesFound.Select(entry =>
+            {
+                using (entry)
+                {
+                    return new
+                    {
+                        Name = entry.Name,
+                        GroupName = ((object[])entry.Properties["MemberOf"].Value).Select(obj => obj.ToString())
+                    };
+                }
+            });
+
+            foreach (var item in memberOf)
+            {
+                Debug.Print("Name = " + item.Name);
+                Debug.Print("Member of:");
+
+                foreach (var groupName in item.GroupName)
+                {
+                    MessageBox.Show("   " + groupName);
+                }
+
+                Debug.Print(String.Empty);
+            }
+
+            MessageBox.Show("fertig mit domaine");
+
+
+        }
+
+        private static void __readAllDomainGroupsOfCurrentUserAlt()
         {
             //(gute Basis)
 
@@ -220,20 +326,22 @@ namespace ACLMaster
                         if (groupResult != null)
                         {
 
-                            string[] split = groupResult.Split(',');                      
-                  
+                            string[] split = groupResult.Split(',');
+
                             string name = split[0].Substring(3, split[0].Length - 3);
                             string domain = split[2].Substring(3, split[2].Length - 3);
-                       
-                           
+                            string SID = obtainSIDForDomainUser(name, domain);
+
+                            MessageBox.Show(name + "\n" + domain + "\n" + SID);
                             //  groups.Add(groupResult.Substring(3, groupResult.IndexOf(',') - 3));
                         }
                     }
                 }
+                MessageBox.Show("fertig mit Domain");
             }
 
 
-          
+
 
 
 
@@ -266,52 +374,52 @@ namespace ACLMaster
             return (bool)@group.Invoke("IsMember", new object[] { userPath });
         }
 
-        private static void readAllLocalGroups()
-        {
-            var AD = new PrincipalContext(ContextType.Machine, Environment.MachineName);
-            var group = new GroupPrincipal(AD);
-            var searchgroup = new PrincipalSearcher(@group);
+        //private static void readAllLocalGroups()
+        //{
+        //    var AD = new PrincipalContext(ContextType.Machine, Environment.MachineName);
+        //    var group = new GroupPrincipal(AD);
+        //    var searchgroup = new PrincipalSearcher(@group);
 
-            using (PrincipalSearchResult<Principal> allPrincipals = searchgroup.FindAll())
+        //    using (PrincipalSearchResult<Principal> allPrincipals = searchgroup.FindAll())
 
-                foreach (GroupPrincipal groupPrincipal in allPrincipals.OfType<GroupPrincipal>())
+        //        foreach (GroupPrincipal groupPrincipal in allPrincipals.OfType<GroupPrincipal>())
 
-                //Fixme: the following should also als the new dictionalry for the domain user if ready
-                {
-                    Prcpl prcpl = null;
-                    if (Global.settings.allLocalGroupsOfCurrentUser.Contains(groupPrincipal.Sid.ToString()) || Global.settings.allLocalGroupsOfCurrentUser.Contains(groupPrincipal.Sid.ToString()))
-                    {
-                        //mark the principal so that the current user is a member of it
-                        prcpl = new Prcpl(groupPrincipal.Sid.ToString(), groupPrincipal.Context.Name, groupPrincipal.Name, groupPrincipal.UserPrincipalName, true);
-                    }
-                    else
-                    {
-                        //create the principal without having the user a member of it.
-                        prcpl = new Prcpl(groupPrincipal.Sid.ToString(), groupPrincipal.Context.Name, groupPrincipal.Name, groupPrincipal.UserPrincipalName);
-                    }
+        //        //Fixme: the following should also als the new dictionalry for the domain user if ready
+        //        {
+        //            Prcpl prcpl = null;
+        //            if (Global.settings.allGroupsOfCurrentUser.Contains(groupPrincipal.Sid.ToString()) || Global.settings.allGroupsOfCurrentUser.Contains(groupPrincipal.Sid.ToString()))
+        //            {
+        //                //mark the principal so that the current user is a member of it
+        //                prcpl = new Prcpl(groupPrincipal.Sid.ToString(), groupPrincipal.Context.Name, groupPrincipal.Name, groupPrincipal.UserPrincipalName, true);
+        //            }
+        //            else
+        //            {
+        //                //create the principal without having the user a member of it.
+        //                prcpl = new Prcpl(groupPrincipal.Sid.ToString(), groupPrincipal.Context.Name, groupPrincipal.Name, groupPrincipal.UserPrincipalName);
+        //            }
 
-                    Global.settings.allLocalGroups.Add(groupPrincipal.Sid.ToString(), prcpl);
-                }
-        }
+        //            Global.settings.allLocalGroups.Add(groupPrincipal.Sid.ToString(), prcpl);
+        //        }
+        //}
 
-        /// <summary>
-        ///     Reads all domain groups.
-        /// </summary>
-        private static void readAllDomainGroups()
-        {
-            //todo: if the other solution works, it may also be used here
+        ///// <summary>
+        /////     Reads all domain groups.
+        ///// </summary>
+        //private static void readAllDomainGroups()
+        //{
+        //    //todo: if the other solution works, it may also be used here
 
-            var AD = new PrincipalContext(ContextType.Domain);
-            var group = new GroupPrincipal(AD);
-            var searchgroup = new PrincipalSearcher(@group);
+        //    var AD = new PrincipalContext(ContextType.Domain);
+        //    var group = new GroupPrincipal(AD);
+        //    var searchgroup = new PrincipalSearcher(@group);
 
-            using (PrincipalSearchResult<Principal> allPrincipals = searchgroup.FindAll())
+        //    using (PrincipalSearchResult<Principal> allPrincipals = searchgroup.FindAll())
 
-                foreach (GroupPrincipal groupPrincipal in allPrincipals.OfType<GroupPrincipal>())
-                {
-                    Global.settings.allDomainGroups.Add(groupPrincipal.Sid.ToString(), new Prcpl(groupPrincipal.Sid.ToString(), groupPrincipal.Context.Name, groupPrincipal.Name, groupPrincipal.UserPrincipalName));
-                }
-        }
+        //        foreach (GroupPrincipal groupPrincipal in allPrincipals.OfType<GroupPrincipal>())
+        //        {
+        //            Global.settings.allDomainGroups.Add(groupPrincipal.Sid.ToString(), new Prcpl(groupPrincipal.Sid.ToString(), groupPrincipal.Context.Name, groupPrincipal.Name, groupPrincipal.UserPrincipalName));
+        //        }
+        //}
 
         //private static void readAllLocalUsers()
         //{
@@ -329,21 +437,21 @@ namespace ACLMaster
         //    CustomSettings.save(Global.settings, Global.settings.settingsFile);
         //}
 
-        private static void readAllDomainUsers()
-        {
-            var AD = new PrincipalContext(ContextType.Domain);
-            var u = new UserPrincipal(AD);
-            var search = new PrincipalSearcher(u);
+        //private static void readAllDomainUsers()
+        //{
+        //    var AD = new PrincipalContext(ContextType.Domain);
+        //    var u = new UserPrincipal(AD);
+        //    var search = new PrincipalSearcher(u);
 
-            foreach (UserPrincipal result in search.FindAll())
-            {
-                Global.settings.allDomainUsers.Add(result.Sid.ToString(), new Prcpl(result.Sid.ToString(), result.Context.Name, result.Name, result.UserPrincipalName));
+        //    foreach (UserPrincipal result in search.FindAll())
+        //    {
+        //        Global.settings.allDomainUsers.Add(result.Sid.ToString(), new Prcpl(result.Sid.ToString(), result.Context.Name, result.Name, result.UserPrincipalName));
 
-                Console.WriteLine(result.Name);
-            }
+        //        Console.WriteLine(result.Name);
+        //    }
 
-            CustomSettings.save(Global.settings, Global.settings.settingsFile);
-        }
+        //    CustomSettings.save(Global.settings, Global.settings.settingsFile);
+        //}
 
         public static bool isCurrentUserLocalUser()
         {
@@ -358,23 +466,23 @@ namespace ACLMaster
 
             Tulpep.ActiveDirectoryObjectPicker.DirectoryObjectPickerDialog picker = new DirectoryObjectPickerDialog()
             {
-                AllowedObjectTypes = ObjectTypes.All   ,
-                DefaultObjectTypes = ObjectTypes.None  ,
+                AllowedObjectTypes = ObjectTypes.All,
+                DefaultObjectTypes = ObjectTypes.None,
                 AllowedLocations = Locations.All,
-                DefaultLocations = Locations.JoinedDomain  ,
+                DefaultLocations = Locations.JoinedDomain,
                 MultiSelect = false,
                 ShowAdvancedView = true
             };
 
 
 
-             picker.DefaultObjectTypes  |= ObjectTypes.Users ;
-            picker.DefaultObjectTypes |= ObjectTypes.WellKnownPrincipals ;
+            picker.DefaultObjectTypes |= ObjectTypes.Users;
+            picker.DefaultObjectTypes |= ObjectTypes.WellKnownPrincipals;
 
             if (!userOnly)
             {
-          
-                picker.DefaultObjectTypes  |= ObjectTypes.BuiltInGroups;
+
+                picker.DefaultObjectTypes |= ObjectTypes.BuiltInGroups;
                 picker.DefaultObjectTypes |= ObjectTypes.Groups;
             }
 
@@ -383,7 +491,7 @@ namespace ACLMaster
 
             if (picker.ShowDialog() == DialogResult.OK)
             {
-   
+
                 ret.Name = picker.SelectedObject.Name;
 
 
@@ -401,17 +509,17 @@ namespace ACLMaster
                 else if (picker.SelectedObject.FetchedAttributes[0] is byte[])
                 {
                     byte[] bytes = (byte[])picker.SelectedObject.FetchedAttributes[0];
-                    ret.Sid  = BytesToString(bytes);
+                    ret.Sid = BytesToString(bytes);
                 }
 
                 return ret;
 
-            
+
             }
             else
             {
                 MessageBox.Show("error in selecting user");
-                return ret ;
+                return ret;
             }
 
         }
