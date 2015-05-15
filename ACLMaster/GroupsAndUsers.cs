@@ -154,20 +154,21 @@ namespace ACLMaster
 
             var context = new PrincipalContext(ContextType.Machine, Environment.MachineName);
             UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, Environment.UserName);
-
+            string test = "";
             foreach (GroupPrincipal group in userPrincipal.GetAuthorizationGroups())
             {
 
                 Global.settings.allGroupsOfCurrentUser.Add(@group.Sid.ToString(), new Prcpl(@group.Sid.ToString(), @group.Context.Name, @group.Name, @group.UserPrincipalName));
 
+test=test+group.Name;
 
 
             }
 
             //            MessageBox.Show(resultStr);
-            string test;
-            test = "";
+           
             MessageBox.Show("fertig mit local");
+            MessageBox.Show(test);
             // return result;
 
 
@@ -251,7 +252,29 @@ namespace ACLMaster
                 return "";
         }
 
-        private static void readAllDomainGroupsOfCurrentUser()
+
+          private static void readAllDomainGroupsOfCurrentUser()
+
+        {
+
+              //Sieht sehr gut aus. JA, das ist es
+
+            List<string> result = new List<string>();
+            WindowsIdentity wi = new WindowsIdentity(Environment.UserName);
+
+            foreach (IdentityReference group in wi.Groups)
+            {
+                try
+                {
+                    result.Add(group.Translate(typeof(NTAccount)).ToString());
+                }
+                catch (Exception ex) { }
+            }
+            result.Sort();
+           
+        
+          }
+        private static void _______readAllDomainGroupsOfCurrentUser()
         {
             var userNameContains = Environment.UserName;
 
@@ -279,7 +302,11 @@ namespace ACLMaster
                     return new
                     {
                         Name = entry.Name,
-                        GroupName = ((object[])entry.Properties["MemberOf"].Value).Select(obj => obj.ToString())
+                      //  GroupName = ((object[])entry.Properties["MemberOf"].Value).Select(obj => obj.ToString())
+                         // GroupName = (entry.Properties["MemberOf"].Value)
+                     GroupName =entry.Properties["MemberOf"].Value.ToString()
+                    //   GroupName =entry.Properties["ObjectSID"].Value.ToString()
+                         //GroupName = (entry.Properties["MemberOf"].Value).Select(obj => obj.ToString())
                     };
                 }
             });
@@ -288,11 +315,12 @@ namespace ACLMaster
             {
                 Debug.Print("Name = " + item.Name);
                 Debug.Print("Member of:");
-
-                foreach (var groupName in item.GroupName)
-                {
-                    MessageBox.Show("   " + groupName);
-                }
+                
+               MessageBox.Show(item.GroupName.ToString());
+                //foreach (var groupName in item.GroupName)
+                //{
+                //    MessageBox.Show("   " + groupName);
+                //}
 
                 Debug.Print(String.Empty);
             }
